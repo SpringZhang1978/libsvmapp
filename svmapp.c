@@ -186,7 +186,7 @@ double single_scaled(double value, const double y_min, const double y_max,
 svm_model * exo_svm_init(const char * modelFile)
 {
 	const char* scaleargv[] =
-	{ "svmmain", "3.txt" };
+	{ "svmmain", "train.data" };
 	scale_main(2, (char**) scaleargv);
 
 	char* trainargv[] =
