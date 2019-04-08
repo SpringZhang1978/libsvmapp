@@ -2,7 +2,7 @@
  * svmapp.c
  *
  *  Created on: 2019年3月27日
- *      Author: 01515538
+ *      Author: SpringZhang
  */
 
 #include "svm.h"
@@ -35,6 +35,7 @@ double single_scaled(double value, const double y_min, const double y_max,const 
 
 svm_node * get_svm_node(const double *rawdata, int rawdatalen);
 const static int rawdataLen = 100;
+//100组rawsensordata测试数据
 double rawsensordata[rawdataLen] =
 { 25.961079, 27.003452, 28.043232, 29.07543, 30.097397, 31.109077, 32.11132,
 		33.103767, 34.084038, 35.04871, 35.994911, 36.92144, 37.829311,
@@ -72,6 +73,7 @@ struct svm_node dynamic_rawdata[rawdataLen + 1] =
 
  }*/
 
+//根据原始测试数据建立svm_node数组
 svm_node * get_svm_node(const double *rawdata, int rawdatalen)
 {
 	//struct svm_node* x_data = (struct svm_node*) malloc(
@@ -129,6 +131,7 @@ struct svm_model *globalSVMModel;
 const char * scale_output_file = "/tmp/scale.result";
 const char * output_model_file = "scale.result.model";
 
+//获取原始测试数据中的最大最小值
 void get_minmax_value(double * rawdatainput, int rawdatalen, double *out_y_min,
 		double *out_y_max)
 {
@@ -144,6 +147,7 @@ void get_minmax_value(double * rawdatainput, int rawdatalen, double *out_y_min,
 	*out_y_min = y_min;
 	*out_y_max = y_max;
 }
+//对原始数据组进行缩放处理
 int exo_svm_scale(double * rawdatainput, int rawdatalen, const double y_lower,
 		const double y_upper)
 {
@@ -160,6 +164,7 @@ int exo_svm_scale(double * rawdatainput, int rawdatalen, const double y_lower,
 	return 0;	//succeed
 }
 
+//对每单个数据进行缩放处理
 double single_scaled(double value, const double y_min, const double y_max,
 		const double y_lower, const double y_upper)
 {
@@ -177,6 +182,7 @@ double single_scaled(double value, const double y_min, const double y_max,
 	return value;
 }
 //exo_svm_init run once during app start to generate the svm_model
+//svm初始化：1，从文件读取训练数据；2，模型训练并返回模型参数
 svm_model * exo_svm_init(const char * modelFile)
 {
 	const char* scaleargv[] =
@@ -188,6 +194,7 @@ svm_model * exo_svm_init(const char * modelFile)
 	train_main(2, trainargv);
 	return svm_load_model(modelFile);
 }
+//对测试数据进行预测
 double exo_gait_predict(const double *rawdata, int rawdatalen,
 		const svm_model *model)
 {
@@ -198,6 +205,7 @@ double exo_gait_predict(const double *rawdata, int rawdatalen,
 	double predictresult = svm_predict(model, x_data);
 	return predictresult;
 }
+//数据打印输出
 void dump_data(const double *rawdata, int rawdatalen)
 {
 	for (int i = 0; i < rawdatalen; i++)
